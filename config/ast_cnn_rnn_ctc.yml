@@ -1,0 +1,55 @@
+model_type: acoustic
+
+logger:
+    path: /home/dml/speech_recognition/dataset/logs/cnn_rnn_ctc.logs
+    level: 20
+
+params_path: # None
+net_info:
+    net_name: cnn_rnn_ctc
+    net_cfg:
+        seq_len: 204
+        feat_dim: 256
+        num_hiddens: [1208]
+        cell_type: lstm
+
+train_cfg:
+    context: [gpu, [1]]
+    train_iter:
+        list_path: /home/dml/speech_recognition/dataset/fbank_thchs30/list_files/train.lst
+        max_seq: 1632
+        max_label: 48 
+        batch_size: 16
+        shrink_times: 8
+        shuffle: True
+        num_workers: 4
+        py_to_idx_path: /home/dml/speech_recognition/dataset/fbank_thchs30/dict/pinyins_to_index.json
+    valid_iter:
+        list_path: /home/dml/speech_recognition/dataset/fbank_thchs30/list_files/valid.lst
+        max_seq: 1632
+        max_label: 48
+        batch_size: 16
+        shrink_times: 8
+        shuffle: False
+        num_workers: 4
+        py_to_idx_path: /home/dml/speech_recognition/dataset/fbank_thchs30/dict/pinyins_to_index.json
+    metric:
+        phase: train
+    optimizer:
+        name: adam
+        config:
+            learning_rate: 0.0008
+            wd: 0.01
+            rescale_grad: 0.0625
+    batch_end_callback:
+        frequent: 20
+    epoch_end_callback:
+        checkpoint_prefix: /home/dml/speech_recognition/model/cnn_rnn_ctc
+        criteria_name: loss
+        rule: less
+        lr_factor: 0.5
+        thresh: 10
+    epoch: 200
+    early_stop: 20
+    data_names: [data]
+    label_names: [label, data_len, label_len]

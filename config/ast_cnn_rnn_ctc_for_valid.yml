@@ -1,0 +1,33 @@
+model_type: acoustic
+
+logger:
+    path: /home/dengmengling/Downloads/valid/cnn_dnn_ctc.logs
+    level: 20
+
+params_path: /home/dengmengling/Downloads/cnn_rnn_ctc/cnn_rnn_ctc-0196.params
+net_info:
+    net_name: cnn_rnn_ctc
+    net_cfg:
+        seq_len: 204
+        feat_dim: 256
+        num_hiddens: [128, 256]
+        num_cls: 1208
+        cell_type: gru
+
+eval_cfg:
+    context: [cpu, [0]]
+    eval_iter:
+        list_path: /home/dengmengling/Public/thchs30_fbank/list_files/test.lst
+        max_seq: 1632
+        max_label: 200
+        batch_size: 2
+        shrink_times: 8
+        shuffle: True
+        num_workers: 4
+        py_to_idx_path: /home/dengmengling/Public/thchs30_fbank/dict/pinyins_to_index.json
+    metric:
+        phase: valid
+    frequent: 1
+    out_names: [predict_output]
+    data_names: [data]
+    predict_path: /home/windog/Downloads/predict.nd

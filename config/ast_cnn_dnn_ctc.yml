@@ -1,0 +1,53 @@
+model_type: acoustic
+
+logger:
+    path: /home/dengmengling/Public/log/cnn_dnn_ctc.logs
+    level: 20
+
+params_path: # None
+net_info:
+    net_name: cnn_dnn_ctc
+    net_cfg:
+        feat_dim: 256
+        num_cls: 1208
+
+train_cfg:
+    context: [cpu, [0]]
+    train_iter:
+        list_path: /home/dengmengling/Public/thchs30_fbank/list_files/train.lst
+        max_seq: 1632
+        max_label: 48 
+        batch_size: 4
+        shrink_times: 8
+        shuffle: True
+        num_workers: 4
+        py_to_idx_path: /home/dengmengling/Public/thchs30_fbank/dict/pinyins_to_index.json
+    valid_iter:
+        list_path: /home/dengmengling/Public/thchs30_fbank/list_files/valid.lst
+        max_seq: 1632
+        max_label: 48
+        batch_size: 4
+        shrink_times: 8
+        shuffle: False
+        num_workers: 4
+        py_to_idx_path: /home/dengmengling/Public/thchs30_fbank/dict/pinyins_to_index.json
+    metric:
+        phase: train
+    optimizer:
+        name: adam
+        config:
+            learning_rate: 0.0008
+            wd: 0.01
+            rescale_grad: 1
+    batch_end_callback:
+        frequent: 20
+    epoch_end_callback:
+        checkpoint_prefix: /home/dengmengling/Public/model/cnn_dnn_ctc
+        criteria_name: loss
+        rule: less
+        lr_factor: 0.5
+        thresh: 10
+    epoch: 200
+    early_stop: 20
+    data_names: [data]
+    label_names: [label, data_len, label_len]
